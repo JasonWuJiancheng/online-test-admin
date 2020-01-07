@@ -1,8 +1,8 @@
 package com.onlinetest.admin;
 
-import com.onlinetest.admin.entity.User;
-import com.onlinetest.admin.service.LoginService;
-import com.onlinetest.admin.service.impl.LoginServiceImpl;
+import com.onlinetest.admin.entity.ExamType;
+import com.onlinetest.admin.service.ExamTypeService;
+import com.onlinetest.admin.service.impl.ExamTypeServiceImpl;
 
 /**
  * @author JasonWu
@@ -11,13 +11,15 @@ import com.onlinetest.admin.service.impl.LoginServiceImpl;
 public class Test {
 
     public static void main(String[] args) {
-        LoginService loginService = new LoginServiceImpl();
 
-        User user = new User();
-        user.setUsername("2016110444");
-        user.setPassword("1");
-        int res = loginService.login(user);
+        ExamTypeService examTypeService = new ExamTypeServiceImpl();
 
-        System.out.println("res="+res);
+        ExamType examType = new ExamType("1","2018-2019学年上半学期期末考试","20190511","20191116");
+//        examTypeService.insertExamType(examType);
+
+//        List<ExamType> allExamTypes = examTypeService.getAllExamType();
+//        System.out.println(allExamTypes);
+
+//        examTypeService.updateExamType(examType);
     }
 }

@@ -1,4 +1,4 @@
-package com.onlinetest.admin.servlet;
+package com.onlinetest.admin.servlet.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onlinetest.admin.entity.User;
