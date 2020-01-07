@@ -9,9 +9,6 @@ public class ResCode {
     /** 没有权限 */
     public static final Integer NOPERMISS = 401;
 
-    /** 权限不足 */
-    public static final Integer PERMISSION_LESS = 402;
-
     /** 操作成功*/
     public static final Integer OPERATIONSUCCESS = 200;
 
