@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+<h1>登录页面</h1>
+    <form id="fm_login" method="post">
+        <label>账号：</label><input type="text" name="username"><br>
+        <label>密码：</label><input type="password" name="password">
+        <input id="btn_login" type="button" value="提交">
+    </form>
+</body>
+<script>
+    $("#btn_login").click(function(){
+        $.ajax({
+            type: "post",
+            url: "/login",
+            data: $("#fm_login").serialize(),
+            xhrFields: {
+                withCredentials: true
+            },
+            success: function(result) {
+                var json = jQuery.parseJSON(result);
+                if(json.code=="401"){
+                    alert(json.msg);
+                }else{
+                    window.location.href=json.url;
+                }
+            },
+            error : function(e){
+                console.log(e.status);
+                console.log(e.responseText);
+            }
+        });
+    });
+</script>
+</html>
