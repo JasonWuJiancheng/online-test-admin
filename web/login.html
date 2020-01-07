@@ -23,11 +23,13 @@
                 withCredentials: true
             },
             success: function(result) {
-                var json = jQuery.parseJSON(result);
-                if(json.code=="401"){
-                    alert(json.msg);
+                // var json = jQuery.parseJSON(result);
+                console.log(result);
+                console.log(typeof result)
+                if(result.status==false){
+                    alert(result.msg);
                 }else{
-                    window.location.href=json.url;
+                    window.location.href=result.data;
                 }
             },
             error : function(e){

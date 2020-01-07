@@ -1,19 +1,22 @@
 package com.onlinetest.admin.servlet.user;
 
-import com.alibaba.fastjson.JSONObject;
+import com.onlinetest.admin.entity.Result;
 import com.onlinetest.admin.entity.User;
 import com.onlinetest.admin.service.LoginService;
 import com.onlinetest.admin.service.impl.LoginServiceImpl;
+import com.onlinetest.admin.utils.ResCode;
+import com.onlinetest.admin.utils.ResUtil;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 /**
  * @author JasonWu
  * @create 2019-12-19-20:50
  */
+@WebServlet(value = "/login")
 public class LoginServlet extends HttpServlet {
 
     private final int COOKIE_TIME = 60;
@@ -22,11 +25,9 @@ public class LoginServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        PrintWriter out = response.getWriter();
+        Result result = null;
         //获取cookie
         Cookie[] cookies=request.getCookies();
-        //json对象用于返回结果
-        JSONObject jsonObject = new JSONObject();
         //获取参数用户名密码
         String username = request.getParameter("username");
         String password = request.getParameter("password");
@@ -41,10 +42,8 @@ public class LoginServlet extends HttpServlet {
             case 0:
                 System.out.println("用户不存在-"+user);
                 //返回信息
-                jsonObject.put("code",401);
-                jsonObject.put("msg","用户不存在，登录失败");
-                out.write(jsonObject.toString());
-                out.flush();
+                result = new Result(false, ResCode.NOPERMISS,"用户不存在，登录失败");
+                ResUtil.toJson(result,response);
                 //注销session与cookie
                 session.invalidate();
                 for(Cookie cookie: cookies){
@@ -55,10 +54,8 @@ public class LoginServlet extends HttpServlet {
             case -1:
                 System.out.println("密码错误-"+user);
                 //返回信息
-                jsonObject.put("code",401);
-                jsonObject.put("msg","用户密码错误，登录失败");
-                out.write(jsonObject.toString());
-                out.flush();
+                result = new Result(false, ResCode.NOPERMISS,"用户密码错误，登录失败");
+                ResUtil.toJson(result,response);
                 //注销session与cookie
                 session.invalidate();
                 for(Cookie cookie: cookies){
@@ -79,18 +76,13 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(cookie1);
                 response.addCookie(cookie2);
                 //返回信息
-                jsonObject.put("code",200);
-                jsonObject.put("msg","用户登录成功");
                 String backUrl = "http://" + request.getServerName() + ":"
                         + request.getServerPort() + request.getContextPath()
                         + "/admin_page.html";
-                jsonObject.put("url",backUrl);
-                out.write(jsonObject.toString());
-                out.flush();
+                result = new Result(true, ResCode.OPERATIONSUCCESS,"用户登录成功",backUrl);
+                ResUtil.toJson(result,response);
                 break;
         }
-        System.out.println(jsonObject.toString());
-        out.close();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
