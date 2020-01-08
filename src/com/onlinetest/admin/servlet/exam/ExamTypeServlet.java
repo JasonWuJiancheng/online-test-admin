@@ -32,10 +32,13 @@ public class ExamTypeServlet extends HttpServlet {
         //解析参数
         String method = req.getParameter("method");
 
+        String name = req.getParameter("name");
+        String startTime = req.getParameter("startTime");
+        String endTime = req.getParameter("endTime");
+
         if("".equals(method) || method==null){
             //参数为空则查询错误
             result = new Result(false, ResCode.OPERATIONSUCCESS, ResMsg.OPERATION_FAULT);
-            ResUtil.toJson(result,resp);
         }else{
             switch (method){
                 case "all":
@@ -45,9 +48,20 @@ public class ExamTypeServlet extends HttpServlet {
                     }else {
                         result = new Result(true,ResCode.OPERATIONSUCCESS,ResMsg.FIND_SUCCESS,allExamType);
                     }
-                    ResUtil.toJson(result,resp);
+                    break;
+                case "add":
+                    if(name==null || startTime==null || endTime==null){
+                        result = new Result(false,ResCode.SAVEERROR,ResMsg.SAVE_FAULT);
+                    }else {
+                        ExamType examType = new ExamType("", name, startTime, endTime);
+                        examTypeService.insertExamType(examType);
+                        //TODO
+                        result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS);
+                    }
+                    break;
             }
         }
-
+        //返回信息
+        ResUtil.toJson(result,resp);
     }
 }
