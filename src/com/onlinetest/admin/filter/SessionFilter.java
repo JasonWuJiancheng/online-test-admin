@@ -22,7 +22,8 @@ public class SessionFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         //放行指定页面
         final String uri = request.getRequestURI().startsWith("/") ? request.getRequestURI().substring(1) : request.getRequestURI();
-        if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js")){
+        if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js") ||
+        uri.endsWith(".css")){
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }else {
