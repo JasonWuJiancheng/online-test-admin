@@ -3,8 +3,133 @@
 <head>
     <meta charset="UTF-8">
     <title>考试种类</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/jquery.cookie.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.min.js"></script>
+    <script src="js/bootstrap-table-zh-CN.min.js"></script>
 </head>
 <body>
-    <h1>考试种类</h1>
+<div>
+    <div>
+        <div class="col-*-12">
+
+            <div id="toolbar">
+                <div class="btn btn-primary" data-toggle="modal" data-target="#addModal">添加记录</div>
+            </div>
+
+            <table id="table" class="table table-hover"></table>
+
+            <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                                &times;
+                            </button>
+                            <h4 class="modal-title" id="myModalLabel">添加记录</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form role="form" action="javascript:void(0)">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="name" placeholder="请输入名称">
+                                </div>
+                                <div class="form-group">
+                                    <input type="text" class="form-control" id="age" placeholder="请输入年龄">
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-primary" id="addRecord">提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var $table = $('#table');
+    var data = [];
+    $(function () {
+        $.ajax({
+            url: "data.json",
+            success: function (result) {
+                if (result) {
+                    var json = jQuery.parseJSON(result);
+                    data = json.data;
+                    initTable();
+                }
+            }
+        });
+        $("#addRecord").click(function(){
+            alert("name:" + $("#name").val() + " age:" +$("#age").val());
+        });
+    });
+
+    //初始化表格方法
+    function initTable() {
+        $table.bootstrapTable({
+            data: data,
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存，默认为true
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            search: true,                       //搜索框
+            strictSearch: true,
+            showColumns: true,                  //列选择按钮
+            showRefresh: true,                  //刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //点击选中行
+            showToggle: true,                   //视图切换按钮
+            pagination: true,                   //是否显示分页
+            sidePagination: 'client',           //客户端分页
+            pageNumber: 1,                      //首页页码
+            pageSize: 10,                        //页面数据条数
+            pageList:[10, 25, 50, 100],
+            uniqueId: "examTypeId",             //每一行的唯一标识
+            columns: [
+                {
+                    fileId: 'state',
+                    checkbox: true,
+                }, {
+                    title: 'ID',
+                    field: 'examTypeId',
+                    sortable: true,
+                }, {
+                    title: '考试名称',
+                    field: 'name',
+                }, {
+                    title: '开始时间',
+                    field: 'startTime',
+                    sortable: true,
+                }, {
+                    title: '截止时间',
+                    field: 'endTime',
+                    sortable: true,
+                }, {
+                    field:'ID',
+                    title: '操作',
+                    width: 120,
+                    align: 'center',
+                    formatter: actionFormatter
+                }
+            ]
+        });
+    }
+    //操作栏的格式化
+    function actionFormatter(value, row, index) {
+        var id = value;
+        var result = "";
+        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
+</script>
 </body>
 </html>
