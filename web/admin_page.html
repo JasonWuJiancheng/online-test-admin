@@ -3,8 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <title>在线考试系统管理端</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link href="css/main.css" rel="stylesheet">
 </head>
 <body>
-    <h1>在线考试系统</h1>
+<!--顶部导航栏部分-->
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" title="logoTitle" href="#">在线考试系统管理端</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li role="presentation">
+                    <a href="#">当前用户：<span class="badge">JasonWu</span></a>
+                </li>
+                <li>
+                    <a href="#">退出登录</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- 中间主体内容部分 -->
+<div class="pageContainer">
+    <!-- 左侧导航栏 -->
+    <div class="pageSidebar">
+        <ul class="nav nav-pills nav-stacked parentUl">
+            <!-- 侧边栏选项 -->
+            <li role="presentation" class="active">
+                <a href="welcome.html" target="mainFrame"><span class="glyphicon glyphicon-home"></span> 首页</a>
+            </li>
+            <li role="presentation">
+                <a href="#" data-toggle="collapse" data-target="#list1">
+                    <span class="glyphicon glyphicon-file"></span> 考试管理 <b class="caret"></b>
+                </a>
+                <ul id="list1" class="collapse nav nav-pills nav-stacked">
+                    <li>
+                        <a href="exam_type.html" target="mainFrame">考试种类</a>
+                    </li>
+                    <li>
+                        <a href="#" target="mainFrame">考试科目</a>
+                    </li>
+                    <li>
+                        <a href="#" target="mainFrame">发布考试</a>
+                    </li>
+                </ul>
+            </li>
+            <li role="presentation">
+                <a href="#" data-toggle="collapse" data-target="#list2">
+                    <span class="glyphicon glyphicon-user"></span> 用户管理 <b class="caret"></b>
+                </a>
+                <ul id="list2" class="collapse nav nav-pills nav-stacked">
+                    <li>
+                        <a href="#" target="mainFrame">考生管理</a>
+                    </li>
+                    <li>
+                        <a href="#" target="mainFrame">教师管理</a>
+                    </li>
+                </ul>
+            </li>
+            <li role="presentation">
+                <a href="#" data-toggle="collapse" data-target="#list3">
+                    <span class="glyphicon glyphicon-cog"></span> 系统管理 <b class="caret"></b>
+                </a>
+                <ul id="list3" class="collapse nav nav-pills nav-stacked">
+                    <li>
+                        <a href="#" target="mainFrame">题型设置</a>
+                    </li>
+                    <li>
+                        <a href="#" target="mainFrame">专业设置</a>
+                    </li>
+                    <li>
+                        <a href="#" target="mainFrame">班级设置</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 左侧导航和正文内容的分隔线 -->
+    <div class="splitter"></div>
+    <!-- 正文内容部分 -->
+    <div class="pageContent">
+        <iframe src="welcome.html" id="mainFrame" name="mainFrame"
+                frameborder="0" width="100%"  height="100%" frameBorder="0">
+        </iframe>
+    </div>
+
+</div>
+<!-- 底部页脚部分 -->
+<div class="footer">
+    <p class="text-center">
+        2019 &copy; JasonWu.
+    </p>
+</div>
+
+<script type="text/javascript">
+    $(".parentUl>li").click(function() {
+        $(".active").removeClass('active');
+        $(this).addClass("active");
+        $("[class!='active']>ul").removeClass('in');
+    });
+</script>
 </body>
 </html>
