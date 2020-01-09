@@ -98,6 +98,7 @@
             format: 'YYYY-MM-DD hh:mm:ss',
             locale: moment.locale('zh-cn')
         });
+        //取消按钮清除隐藏字段
         $("#cancel").click(function () {
             $("#examTypeId").val("");
         });
@@ -179,14 +180,15 @@
     //初始化表格方法
     function initTable() {
         $table.bootstrapTable({
-            data: data,
+            data: data,                         //数据源
             striped: true,                      //是否显示行间隔色
-            cache: false,                       //是否使用缓存，默认为true
+            cache: false,                       //是否使用缓存
             sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
             toolbar:'#toolbar',
             search: true,                       //搜索框
-            strictSearch: true,
+            visibleSearch: true,                //可见搜索
+            showSearchClearButton: true,        //清除搜索按钮
             showColumns: true,                  //列选择按钮
             showRefresh: true,                  //刷新按钮
             minimumCountColumns: 2,             //最少允许的列数
