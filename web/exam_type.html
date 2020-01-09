@@ -76,14 +76,14 @@
     $(function () {
         //初始化表格
         $.ajax({
-            url: "data.json",
-            // url:"/examtype",
+            // url: "data.json",
+            url:"/examtype",
             data: { method: "all" },
             success: function (result) {
                 if (result) {
-                    var json = jQuery.parseJSON(result);
-                    data = json.data;
-                    // data = result.data;
+                    // var json = jQuery.parseJSON(result);
+                    // data = json.data;
+                    data = result.data;
                     initTable();
                 }
             }
@@ -123,7 +123,29 @@
         });
         //删除勾选记录
         $("#delRecords").click(function () {
-
+            var rows = $table.bootstrapTable('getAllSelections');
+            if (rows.length == 0) {
+                alert("请先选择要删除的记录!");
+            }else {
+                var r=confirm("确定要删除勾选记录吗？（共"+rows.length+"条）");
+                if (r==true) {
+                    $.ajax({
+                        type: "post",
+                        url: "/examtype?method=dels",
+                        data: {rows: JSON.stringify(rows)},
+                        success: function (result) {
+                            alert(result.msg);
+                            if (result.status) {
+                                var ids = new Array();
+                                $.each(rows, function(i, value) {
+                                    ids.push(this.examTypeId);
+                                });
+                                $table.bootstrapTable('remove', {field: 'examTypeId', values: ids});
+                            }
+                        }
+                    });
+                }
+            }
         });
     });
 
@@ -183,19 +205,37 @@
             ]
         });
     }
-
     function numberFormatter(value, row, index) {
         return index+1;
     }
     //操作栏的格式化
     function actionFormatter(value, row, index) {
-        var id = value;
         var result = "";
-        result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        var id = row.examTypeId;
+        // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+        // result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + row + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
+    function delRecord(id) {
+        var row = $table.bootstrapTable('getRowByUniqueId', id);
+        var r = confirm("确定要删除此记录吗？");
+        if (r == true) {
+            $.ajax({
+                type: "post",
+                url: "/examtype?method=del",
+                data: {row: JSON.stringify(row)},
+                success: function (result) {
+                    alert(result.msg)
+                    if (result.status) {
+                        $table.bootstrapTable('removeByUniqueId', id);
+                    }
+                }
+            });
+        }
+    }
+
+
 </script>
 </body>
 </html>

@@ -1,10 +1,12 @@
 package com.onlinetest.admin.entity;
 
+import java.io.Serializable;
+
 /**
  * @author JasonWu
  * @create 2020-01-07-15:31
  */
-public class ExamType {
+public class ExamType implements Serializable {
 
     private String examTypeId;
     private String name;

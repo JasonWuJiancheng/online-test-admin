@@ -31,6 +31,17 @@ public class ExamTypeServiceImpl implements ExamTypeService {
     }
 
     @Override
+    public int deleteExamTypes(List<ExamType> examTypes) {
+        int res = 0;
+        if(examTypes!=null){
+            for(ExamType examType : examTypes){
+                examTypeDao.deleteById(examType.getExamTypeId());
+            }
+        }
+        return res;
+    }
+
+    @Override
     public String insertExamType(ExamType examType) {
         return examTypeDao.insert(examType);
     }

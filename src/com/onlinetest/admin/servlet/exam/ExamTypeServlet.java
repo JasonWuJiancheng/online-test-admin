@@ -1,5 +1,6 @@
 package com.onlinetest.admin.servlet.exam;
 
+import com.alibaba.fastjson.JSON;
 import com.onlinetest.admin.entity.ExamType;
 import com.onlinetest.admin.entity.Result;
 import com.onlinetest.admin.service.ExamTypeService;
@@ -56,6 +57,26 @@ public class ExamTypeServlet extends HttpServlet {
                         ExamType examType = new ExamType("", name, startTime, endTime);
                         String uuid = examTypeService.insertExamType(examType);
                         result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS,uuid);
+                    }
+                    break;
+                case "dels":
+                    String rows = req.getParameter("rows");
+                    if(rows == null){
+                        result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
+                    }else {
+                        List<ExamType> examTypes= JSON.parseArray(rows,ExamType.class);
+                        examTypeService.deleteExamTypes(examTypes);
+                        result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除"+examTypes.size()+"条记录");
+                    }
+                    break;
+                case "del":
+                    String row = req.getParameter("row");
+                    if(row == null){
+                        result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
+                    }else {
+                        ExamType examTypes= JSON.parseObject(row,ExamType.class);
+                        examTypeService.deleteExamType(examTypes);
+                        result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除1条记录");
                     }
                     break;
             }
