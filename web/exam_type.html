@@ -71,22 +71,65 @@
     </div>
 </div>
 <script type="text/javascript">
-    var $table = $('#table');
-    var data = [];
 
+    var $table = $('#table');
     $(function () {
         //初始化表格
-        $.ajax({
-            // url: "data.json",
-            url:"/examtype",
-            data: { method: "all" },
-            success: function (result) {
-                if (result) {
-                    // var json = jQuery.parseJSON(result);
-                    // data = json.data;
-                    data = result.data;
-                    initTable();
+        $table.bootstrapTable({
+            url: '/examtype?method=all',
+            method: 'get',
+            striped: true,                      //是否显示行间隔色
+            cache: false,                       //是否使用缓存
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            toolbar:'#toolbar',
+            search: true,                       //搜索框
+            visibleSearch: true,                //可见搜索
+            showSearchClearButton: true,        //清除搜索按钮
+            showColumns: true,                  //列选择按钮
+            showRefresh: true,                  //刷新按钮
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //点击选中行
+            showToggle: true,                   //视图切换按钮
+            pagination: true,                   //是否显示分页
+            sidePagination: 'client',           //客户端分页
+            pageNumber: 1,                      //首页页码
+            pageSize: 10,                        //页面数据条数
+            pageList:[10, 25, 50, 100],
+            uniqueId: "examTypeId",             //每一行的唯一标识
+            columns: [
+                {
+                    checkbox: true,
+                }, {
+                    title: '序号',
+                    align: "center",
+                    width: 40,
+                    formatter:numberFormatter
+                },{
+                    title: 'ID',
+                    field: 'examTypeId',
+                    sortable: true,
+                    visible: false,
+                }, {
+                    title: '考试名称',
+                    field: 'name',
+                }, {
+                    title: '开始时间',
+                    field: 'startTime',
+                    sortable: true,
+                }, {
+                    title: '截止时间',
+                    field: 'endTime',
+                    sortable: true,
+                }, {
+                    field:'ID',
+                    title: '操作',
+                    width: 120,
+                    align: 'center',
+                    formatter: actionFormatter
                 }
+            ],responseHandler: function (result) {
+                return result.data;
             }
         });
         //日期选择器初始化
@@ -176,64 +219,7 @@
             }
         });
     });
-
-    //初始化表格方法
-    function initTable() {
-        $table.bootstrapTable({
-            data: data,                         //数据源
-            striped: true,                      //是否显示行间隔色
-            cache: false,                       //是否使用缓存
-            sortable: true,                     //是否启用排序
-            sortOrder: "asc",                   //排序方式
-            toolbar:'#toolbar',
-            search: true,                       //搜索框
-            visibleSearch: true,                //可见搜索
-            showSearchClearButton: true,        //清除搜索按钮
-            showColumns: true,                  //列选择按钮
-            showRefresh: true,                  //刷新按钮
-            minimumCountColumns: 2,             //最少允许的列数
-            clickToSelect: true,                //点击选中行
-            showToggle: true,                   //视图切换按钮
-            pagination: true,                   //是否显示分页
-            sidePagination: 'client',           //客户端分页
-            pageNumber: 1,                      //首页页码
-            pageSize: 10,                        //页面数据条数
-            pageList:[10, 25, 50, 100],
-            uniqueId: "examTypeId",             //每一行的唯一标识
-            columns: [
-                {
-                    checkbox: true,
-                }, {
-                    title: '序号',
-                    align: "center",
-                    width: 40,
-                    formatter:numberFormatter
-                },{
-                    title: 'ID',
-                    field: 'examTypeId',
-                    sortable: true,
-                    visible: false,
-                }, {
-                    title: '考试名称',
-                    field: 'name',
-                }, {
-                    title: '开始时间',
-                    field: 'startTime',
-                    sortable: true,
-                }, {
-                    title: '截止时间',
-                    field: 'endTime',
-                    sortable: true,
-                }, {
-                    field:'ID',
-                    title: '操作',
-                    width: 120,
-                    align: 'center',
-                    formatter: actionFormatter
-                }
-            ]
-        });
-    }
+    //序号格式化
     function numberFormatter(value, row, index) {
         return index+1;
     }
