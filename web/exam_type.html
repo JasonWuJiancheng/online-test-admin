@@ -27,13 +27,14 @@
             <table id="table" class="table table-hover"></table>
 
             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-hidden="true">
+                <input type="hidden" name="examTypeId" id="examTypeId" value="">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                 &times;
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">添加记录</h4>
+                            <h4 class="modal-title" id="myModalLabel">编辑考试类型</h4>
                         </div>
                         <div class="modal-body">
                             <form role="form" id="form" action="javascript:void(0)">
@@ -59,7 +60,7 @@
                             </form>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" id="cancel">取消</button>
                             <button type="button" class="btn btn-primary" id="addRecord">提交</button>
                         </div>
                     </div>
@@ -97,29 +98,55 @@
             format: 'YYYY-MM-DD hh:mm:ss',
             locale: moment.locale('zh-cn')
         });
+        $("#cancel").click(function () {
+            $("#examTypeId").val("");
+        });
         //新建记录
         $("#addRecord").click(function(){
             var name = $("#name").val();
             var startTime = $("#startTime").val();
             var endTime = $("#endTime").val();
-            $.ajax({
-                type: "post",
-                url:"/examtype?method=add",
-                data: $("#form").serialize(),
-                success: function(result) {
-                    alert(result.msg);
-                    $('#addModal').modal('hide');
-                    if(result.status == true){
-                        //加载新建行
-                        $table.bootstrapTable('insertRow', {index: 0, row: {
-                            examTypeId:result.data,
-                            name:name,
-                            startTime:startTime,
-                            endTime:endTime}
-                        });
+            var examTypeId = $("#examTypeId").val();
+            var row = {examTypeId:examTypeId, name:name, startTime:startTime, endTime:endTime};
+            if(examTypeId==null||examTypeId==undefined||examTypeId==""){
+                //新增数据
+                $.ajax({
+                    type: "post",
+                    url:"/examtype?method=add",
+                    data: row,
+                    success: function(result) {
+                        alert(result.msg);
+                        if(result.status == true){
+                            //加载新建行
+                            $table.bootstrapTable('insertRow', {index: 0, row: {
+                                    examTypeId:result.data,
+                                    name:name,
+                                    startTime:startTime,
+                                    endTime:endTime
+                                }
+                            });
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                //编辑数据
+                $.ajax({
+                    type: "post",
+                    url:"/examtype?method=update",
+                    data: row,
+                    success: function(result) {
+                        alert(result.msg);
+                        if(result.status == true){
+                            //更新行
+                            $table.bootstrapTable('updateByUniqueId', {id: examTypeId, row: row});
+                        }
+                    }
+                });
+            }
+            //隐藏模态框并清除数据
+            $('#addModal').modal('hide');
+            $('#addModal').removeData("bs.modal");
+            $("#examTypeId").val("");
         });
         //删除勾选记录
         $("#delRecords").click(function () {
@@ -213,10 +240,11 @@
         var result = "";
         var id = row.examTypeId;
         // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
-        // result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"EditViewById('" + row + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRecord('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
         return result;
     }
+    //删除单条记录
     function delRecord(id) {
         var row = $table.bootstrapTable('getRowByUniqueId', id);
         var r = confirm("确定要删除此记录吗？");
@@ -233,6 +261,18 @@
                 }
             });
         }
+    }
+    //编辑记录
+    function editRecord(id) {
+        var row = $table.bootstrapTable('getRowByUniqueId', id);
+        //设置隐藏字段的值
+        $("#examTypeId").val(row.examTypeId);
+        //设置模态框的值
+        $("#name").val(row.name);
+        $("#startTime").val(row.startTime);
+        $("#endTime").val(row.endTime);
+        //显示模态框
+        $('#addModal').modal('show');
     }
 
 

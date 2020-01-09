@@ -33,9 +33,13 @@ public class ExamTypeServlet extends HttpServlet {
         //解析参数
         String method = req.getParameter("method");
 
+        String examTypeId = req.getParameter("examTypeId");
         String name = req.getParameter("name");
         String startTime = req.getParameter("startTime");
         String endTime = req.getParameter("endTime");
+
+        String rows = null;
+        String row = null;
 
         if("".equals(method) || method==null){
             //参数为空则查询错误
@@ -52,15 +56,15 @@ public class ExamTypeServlet extends HttpServlet {
                     break;
                 case "add":
                     if(name==null || startTime==null || endTime==null){
-                        result = new Result(false,ResCode.SAVEERROR,ResMsg.SAVE_FAULT);
+                        result = new Result(false,ResCode.SAVEERROR,ResMsg.ADD_FAULT);
                     }else {
-                        ExamType examType = new ExamType("", name, startTime, endTime);
+                        ExamType examType = new ExamType(examTypeId, name, startTime, endTime);
                         String uuid = examTypeService.insertExamType(examType);
                         result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS,uuid);
                     }
                     break;
                 case "dels":
-                    String rows = req.getParameter("rows");
+                    rows = req.getParameter("rows");
                     if(rows == null){
                         result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
                     }else {
@@ -70,13 +74,22 @@ public class ExamTypeServlet extends HttpServlet {
                     }
                     break;
                 case "del":
-                    String row = req.getParameter("row");
+                    row = req.getParameter("row");
                     if(row == null){
                         result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
                     }else {
                         ExamType examTypes= JSON.parseObject(row,ExamType.class);
                         examTypeService.deleteExamType(examTypes);
                         result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除1条记录");
+                    }
+                    break;
+                case "update":
+                    if(examTypeId==null || name==null || startTime==null || endTime==null){
+                        result = new Result(false,ResCode.SAVEERROR,ResMsg.SAVE_FAULT);
+                    }else {
+                        ExamType examType = new ExamType(examTypeId, name, startTime, endTime);
+                        examTypeService.updateExamType(examType);
+                        result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS);
                     }
                     break;
             }
