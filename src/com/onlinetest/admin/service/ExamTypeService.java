@@ -16,6 +16,6 @@ public interface ExamTypeService {
 
     int deleteExamType(ExamType examType);
 
-    int insertExamType(ExamType examType);
+    String insertExamType(ExamType examType);
 
 }

@@ -54,9 +54,8 @@ public class ExamTypeServlet extends HttpServlet {
                         result = new Result(false,ResCode.SAVEERROR,ResMsg.SAVE_FAULT);
                     }else {
                         ExamType examType = new ExamType("", name, startTime, endTime);
-                        examTypeService.insertExamType(examType);
-                        //TODO
-                        result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS);
+                        String uuid = examTypeService.insertExamType(examType);
+                        result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS,uuid);
                     }
                     break;
             }

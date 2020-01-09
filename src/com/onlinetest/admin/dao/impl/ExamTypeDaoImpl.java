@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author JasonWu
@@ -42,9 +43,11 @@ public class ExamTypeDaoImpl extends BaseDao implements ExamTypeDao {
     }
 
     @Override
-    public int insert(ExamType examType) {
-        String sql = "insert into exam_type (exam_type_id, name, start_time, end_time) values (replace(uuid(), '-', ''), ?, ?, ?)";
-        return executeUpdate(sql,examType.getName(),examType.getStartTime(),examType.getEndTime());
+    public String insert(ExamType examType) {
+        String uuid = UUID.randomUUID().toString().replaceAll("-","");
+        String sql = "insert into exam_type (exam_type_id, name, start_time, end_time) values (?, ?, ?, ?)";
+        executeUpdate(sql,uuid,examType.getName(),examType.getStartTime(),examType.getEndTime());
+        return uuid;
     }
 
     @Override

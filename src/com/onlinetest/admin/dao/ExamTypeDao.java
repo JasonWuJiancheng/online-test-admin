@@ -14,7 +14,8 @@ public interface ExamTypeDao {
 
     ExamType selectByKeyWord();
 
-    int insert(ExamType examType);
+    //返回刚插入的数据uuid
+    String insert(ExamType examType);
 
     int deleteById(String examTypeId);
 

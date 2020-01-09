@@ -31,7 +31,7 @@ public class ExamTypeServiceImpl implements ExamTypeService {
     }
 
     @Override
-    public int insertExamType(ExamType examType) {
+    public String insertExamType(ExamType examType) {
         return examTypeDao.insert(examType);
     }
 }
