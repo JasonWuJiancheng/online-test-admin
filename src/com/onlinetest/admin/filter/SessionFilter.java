@@ -22,15 +22,16 @@ public class SessionFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         //放行指定页面
         final String uri = request.getRequestURI().startsWith("/") ? request.getRequestURI().substring(1) : request.getRequestURI();
-        if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js") ||
-        uri.endsWith(".css") || uri.endsWith(".png")){
+        if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js")
+                || uri.endsWith(".css") || uri.endsWith(".png") || uri.endsWith(".woff2")
+                || uri.endsWith(".woff") || uri.endsWith(".ttf")){
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }else {
             //统一判断session
             if(request.getSession(false) == null){
                 //重新跳转登录页面
-                System.out.println("SessionFilter-doFilter(): 用户未登录-拦截");
+                System.out.println("SessionFilter-doFilter(): 用户未登录拦截"+uri);
                 response.sendRedirect("/login.html");
             }else{
                 //放行

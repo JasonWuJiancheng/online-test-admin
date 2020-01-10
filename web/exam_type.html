@@ -6,6 +6,8 @@
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrapValidator.min.css" rel="stylesheet" type="text/css">
+
     <script src="js/jquery-1.12.4.js"></script>
     <script src="js/jquery.cookie.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
@@ -13,6 +15,7 @@
     <script src="js/bootstrap-table-zh-CN.min.js"></script>
     <script src="js/moment-with-locales.min.js"></script>
     <script src="js/bootstrap-datetimepicker.min.js"></script>
+    <script src="js/bootstrapValidator.min.js"></script>
 </head>
 <body>
 <div>
@@ -39,18 +42,21 @@
                         <div class="modal-body">
                             <form role="form" id="form" action="javascript:void(0)">
                                 <div class="form-group">
+                                    <label class="control-label" for="name">考试名称</label>
                                     <input type="text" class="form-control" id="name" name="name" placeholder="请输入考试类型名称">
                                 </div>
-                                <div class="form-group form-inline">
-                                    <label class="control-label">开始时间</label>
-                                    <div class='col-sm-4 input-group date' id='datetimepicker1'>
+                                <div class="form-group">
+                                    <label class="control-label" for="startTime">开始时间</label>
+                                    <div class='input-group date' id='datetimepicker1'>
                                         <input type='datetime' class="form-control" id="startTime" name="startTime" placeholder="请选择开始时间"/>
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
                                         </span>
                                     </div>
-                                    <label class="control-label">结束时间</label>
-                                    <div class='col-sm-4 input-group date' id='datetimepicker2'>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="endTime">结束时间</label>
+                                    <div class='input-group date' id='datetimepicker2'>
                                         <input type='datetime' class="form-control" id="endTime" name="endTime" placeholder="请选择结束时间"/>
                                         <span class="input-group-addon">
                                             <span class="glyphicon glyphicon-calendar"></span>
@@ -72,6 +78,7 @@
 </div>
 <script type="text/javascript">
     var $table = $('#table');
+    var $form = $('#form');
     $(function () {
         //初始化表格
         $table.bootstrapTable({
@@ -131,66 +138,6 @@
                 return result.data;
             }
         });
-        //日期选择器初始化
-        $('#datetimepicker1').datetimepicker({
-            format: 'YYYY-MM-DD hh:mm:ss',
-            locale: moment.locale('zh-cn')
-        });
-        $('#datetimepicker2').datetimepicker({
-            format: 'YYYY-MM-DD hh:mm:ss',
-            locale: moment.locale('zh-cn')
-        });
-        //取消按钮清除隐藏字段
-        $("#cancel").click(function () {
-            $("#examTypeId").val("");
-        });
-        //记录操作
-        $("#addRecord").click(function(){
-            var name = $("#name").val();
-            var startTime = $("#startTime").val();
-            var endTime = $("#endTime").val();
-            var examTypeId = $("#examTypeId").val();
-            var row = {examTypeId:examTypeId, name:name, startTime:startTime, endTime:endTime};
-            if(examTypeId==null||examTypeId==undefined||examTypeId==""){
-                //新增数据
-                $.ajax({
-                    type: "post",
-                    url:"/examtype?method=add",
-                    data: row,
-                    success: function(result) {
-                        alert(result.msg);
-                        if(result.status == true){
-                            //加载新建行
-                            $table.bootstrapTable('insertRow', {index: 0, row: {
-                                    examTypeId:result.data,
-                                    name:name,
-                                    startTime:startTime,
-                                    endTime:endTime
-                                }
-                            });
-                        }
-                    }
-                });
-            }else{
-                //编辑数据
-                $.ajax({
-                    type: "post",
-                    url:"/examtype?method=update",
-                    data: row,
-                    success: function(result) {
-                        alert(result.msg);
-                        if(result.status == true){
-                            //更新行
-                            $table.bootstrapTable('updateByUniqueId', {id: examTypeId, row: row});
-                        }
-                    }
-                });
-            }
-            //隐藏模态框并清除数据
-            $('#addModal').modal('hide');
-            $('#addModal').removeData("bs.modal");
-            $("#examTypeId").val("");
-        });
         //删除勾选记录
         $("#delRecords").click(function () {
             var rows = $table.bootstrapTable('getAllSelections');
@@ -217,20 +164,107 @@
                 }
             }
         });
+        /*模态框事件*/
+        //取消按钮清除隐藏字段
+        $("#cancel").click(function () {
+            $("#examTypeId").val("");
+        });
+        //记录操作
+        $("#addRecord").click(function(){
+            //验证合法性
+            $form.data("bootstrapValidator").validate();
+            var res = $form.data("bootstrapValidator").isValid();
+            if(res){
+                var name = $("#name").val();
+                var startTime = $("#startTime").val();
+                var endTime = $("#endTime").val();
+                var examTypeId = $("#examTypeId").val();
+                var row = {examTypeId:examTypeId, name:name, startTime:startTime, endTime:endTime};
+                if(examTypeId==null||examTypeId==undefined||examTypeId==""){
+                    //新增数据
+                    $.ajax({
+                        type: "post",
+                        url:"/examtype?method=add",
+                        data: row,
+                        success: function(result) {
+                            alert(result.msg);
+                            if(result.status == true){
+                                //加载新建行
+                                $table.bootstrapTable('insertRow', {index: 0, row: {
+                                        examTypeId:result.data,
+                                        name:name,
+                                        startTime:startTime,
+                                        endTime:endTime
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }else{
+                    //编辑数据
+                    $.ajax({
+                        type: "post",
+                        url:"/examtype?method=update",
+                        data: row,
+                        success: function(result) {
+                            alert(result.msg);
+                            if(result.status == true){
+                                //更新行
+                                $table.bootstrapTable('updateByUniqueId', {id: examTypeId, row: row});
+                            }
+                        }
+                    });
+                }
+                //隐藏模态框并清除数据
+                $('#addModal').modal('hide');
+                $('#addModal').removeData("bs.modal");
+                $("#examTypeId").val("");
+            }
+        });
+        //表单验证
+        $form.bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                name: {
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，考试类型名称不能为空！'
+                        }
+                    }
+                },
+                startTime: {
+                    trigger: "change",
+                    validators: {
+                        notEmpty: {
+                            message: '请选择开始时间'
+                        }
+                    }
+                },
+                endTime: {
+                    trigger: "change",
+                    validators: {
+                        notEmpty: {
+                            message: '请选择结束时间'
+                        }
+                    }
+                }
+            }
+        });
+        //日期选择器初始化
+        $('#datetimepicker1').datetimepicker({
+            format: 'YYYY-MM-DD hh:mm:ss',
+            locale: moment.locale('zh-cn')
+        });
+        $('#datetimepicker2').datetimepicker({
+            format: 'YYYY-MM-DD hh:mm:ss',
+            locale: moment.locale('zh-cn')
+        });
     });
-    //序号格式化
-    function numberFormatter(value, row, index) {
-        return index+1;
-    }
-    //操作栏的格式化
-    function actionFormatter(value, row, index) {
-        var result = "";
-        var id = row.examTypeId;
-        // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRecord('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
-        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
-        return result;
-    }
     //删除单条记录
     function delRecord(id) {
         var row = $table.bootstrapTable('getRowByUniqueId', id);
@@ -261,8 +295,19 @@
         //显示模态框
         $('#addModal').modal('show');
     }
-
-
+    //序号格式化
+    function numberFormatter(value, row, index) {
+        return index+1;
+    }
+    //操作栏的格式化
+    function actionFormatter(value, row, index) {
+        var result = "";
+        var id = row.examTypeId;
+        // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRecord('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
+        result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
+        return result;
+    }
 </script>
 </body>
 </html>
