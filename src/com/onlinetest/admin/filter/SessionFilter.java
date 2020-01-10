@@ -23,7 +23,7 @@ public class SessionFilter implements Filter {
         //放行指定页面
         final String uri = request.getRequestURI().startsWith("/") ? request.getRequestURI().substring(1) : request.getRequestURI();
         if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js") ||
-        uri.endsWith(".css")){
+        uri.endsWith(".css") || uri.endsWith(".png")){
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }else {

@@ -3,36 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <title>用户登录</title>
-    <script src="js/jquery-1.12.4.js" type="text/javascript" charset="utf-8"></script>
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="css/bootstrapValidator.min.css" rel="stylesheet" type="text/css">
+    <script src="js/jquery-1.12.4.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrapValidator.min.js"></script>
 </head>
 <body>
-<h1>登录页面</h1>
-    <form id="fm_login" method="post">
-        <label>账号：</label><input type="text" name="username"><br>
-        <label>密码：</label><input type="password" name="password">
-        <input id="btn_login" type="button" value="提交">
-    </form>
+    <div class="container">
+        <div class="col-md-12">
+            <h2> <i class="glyphicon glyphicon-education" ></i>&nbsp;在线考试系统管理端<span class="beta">&nbsp;&nbsp;统一身份验证<sup>&nbsp;Beta</sup></span></h2>
+            <hr style="height: 1px; border: none; border-top: 1px solid #dedede;">
+        </div>
+        <div class="col-md-8">
+            <div id="myCarousel" data-ride="carousel" class="carousel">
+                <!-- 轮播（Carousel）指标 -->
+                <ol class="carousel-indicators">
+                    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#myCarousel" data-slide-to="1"></li>
+                    <li data-target="#myCarousel" data-slide-to="2"></li>
+                </ol>
+                <!-- 轮播（Carousel）项目 -->
+                <div class="carousel-inner">
+                    <div class="item active"> <img src="img/1.png" alt="First slide"> </div>
+                    <div class="item"> <img src="img/2.png" alt="Second slide"> </div>
+                    <div class="item"> <img src="img/3.png" alt="Third slide"> </div>
+                </div>
+                <!-- 轮播（Carousel）导航 -->
+                <a class="carousel-control left" href="#myCarousel" data-slide="prev"></a>
+                <a class="carousel-control right" href="#myCarousel" data-slide="next"></a>
+            </div>
+        </div>
+        <div class="col-md-4 right">
+            <div class="well col-md-12">
+                <h3>用户登录</h3>
+                <form method="post" id="form" action="/login">
+                    <div class="form-group">
+                        <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-user" ></i></span>
+                            <input type="text" class="form-control" placeholder="用户名"  name="username">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="input-group"> <span class="input-group-addon"><i class="glyphicon glyphicon-lock" ></i></span>
+                            <input type="password" class="form-control" id="password" placeholder="密码"  name="password">
+                        </div>
+                    </div>
+                    <a href="#" style="float: left">注册新用户</a>
+                    <a href="#" style="text-align: right">
+                        <p>忘记密码？点击找回.</p>
+                    </a>
+                    <p>
+                        <input type="submit" id="btn_login" class="btn btn-primary btn-block"  value="登录系统">
+                    </p>
+                </form>
+            </div>
+        </div>
+        <footer class="col-md-12">
+            <hr style="height:1px;border:none;border-top:1px solid #dedede;">
+            <div class="col-md-6">
+                <p>Copyright &copy; JasonWu All Rights Reserved.</p>
+            </div>
+            <div class="col-md-6 ">
+                <div class="footer-i col-md-3 pull-right"> <i class="glyphicon glyphicon-globe"></i><a href="#" target="_black">&nbsp;官方网站</a> </div>
+                <div class="footer-i col-md-3 pull-right"> <i class="glyphicon glyphicon-envelope"></i><a href="#">&nbsp;技术支持</a> </div>
+            </div>
+        </footer>
+    </div>
 </body>
 <script>
-    $("#btn_login").click(function(){
-        $.ajax({
-            type: "post",
-            url: "/login",
-            data: $("#fm_login").serialize(),
-            xhrFields: {
-                withCredentials: true
+    $(function () {
+        //表单验证
+        $('form').bootstrapValidator({
+            message: 'This value is not valid',
+            feedbackIcons: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
             },
-            success: function(result) {
+            fields: {
+                username: {
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，用户名不能为空！'
+                        }
+                    }
+                },
+                password: {
+                    message:'密码无效',
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，密码不能为空！'
+                        }
+                    }
+                },
+            }
+        })
+        .on('success.form.bv', function(e) {
+            e.preventDefault();
+            var $form = $(e.target);
+            var bv = $form.data('bootstrapValidator');
+            $.post($form.attr('action'), $form.serialize(), function(result) {
                 if(result.status==false){
                     alert(result.msg);
+                    $("#password").val("");
                 }else{
                     window.location.href=result.data;
                 }
-            },
-            error : function(e){
-                console.log(e.status);
-                console.log(e.responseText);
-            }
+            }, 'json');
         });
     });
 </script>
