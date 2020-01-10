@@ -24,7 +24,7 @@ public class SessionFilter implements Filter {
         final String uri = request.getRequestURI().startsWith("/") ? request.getRequestURI().substring(1) : request.getRequestURI();
         if(uri.endsWith("login.html") || uri.endsWith("login") || uri.endsWith(".js")
                 || uri.endsWith(".css") || uri.endsWith(".png") || uri.endsWith(".woff2")
-                || uri.endsWith(".woff") || uri.endsWith(".ttf")){
+                || uri.endsWith(".woff") || uri.endsWith(".ttf") || uri.endsWith(".ico")){
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }else {
