@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>考试科目</title>
+    <title>教师管理</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
@@ -30,38 +30,20 @@
             <table id="table" class="table table-hover"></table>
 
             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <input type="hidden" name="examCourseId" id="examCourseId" value="">
+                <input type="hidden" name="teacherId" id="teacherId" value="">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                 &times;
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">编辑考试科目</h4>
+                            <h4 class="modal-title" id="myModalLabel">编辑教师信息</h4>
                         </div>
                         <div class="modal-body">
                             <form role="form" id="form" action="javascript:void(0)">
                                 <div class="form-group">
-                                    <label class="control-label" for="name">考试科目名称</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="请输入考试科目名称">
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="startTime">开始时间</label>
-                                    <div class='input-group date' id='datetimepicker1'>
-                                        <input type='datetime' class="form-control" id="startTime" name="startTime" placeholder="请选择开始时间"/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="control-label" for="endTime">结束时间</label>
-                                    <div class='input-group date' id='datetimepicker2'>
-                                        <input type='datetime' class="form-control" id="endTime" name="endTime" placeholder="请选择结束时间"/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                    </div>
+                                    <label class="control-label" for="name">教师名称</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="请输入教师名称">
                                 </div>
                             </form>
                         </div>
@@ -82,7 +64,7 @@
     $(function () {
         //初始化表格
         $table.bootstrapTable({
-            url: '/examcourse?method=all',
+            url: '/teacher?method=all',
             method: 'get',
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存
@@ -102,7 +84,7 @@
             pageNumber: 1,                      //首页页码
             pageSize: 10,                        //页面数据条数
             pageList:[10, 25, 50, 100],
-            uniqueId: "examCourseId",             //每一行的唯一标识
+            uniqueId: "teacherId",             //每一行的唯一标识
             columns: [
                 {
                     checkbox: true,
@@ -113,20 +95,13 @@
                     formatter:numberFormatter
                 },{
                     title: 'ID',
-                    field: 'examCourseId',
+                    field: 'teacherId',
                     sortable: true,
                     visible: false,
                 }, {
-                    title: '考试科目名称',
+                    title: '教师名称',
+                    sortable: true,
                     field: 'name',
-                }, {
-                    title: '开始时间',
-                    field: 'startTime',
-                    sortable: true,
-                }, {
-                    title: '截止时间',
-                    field: 'endTime',
-                    sortable: true,
                 }, {
                     field:'ID',
                     title: '操作',
@@ -148,16 +123,16 @@
                 if (r==true) {
                     $.ajax({
                         type: "post",
-                        url: "/examcourse?method=dels",
+                        url: "/teacher?method=dels",
                         data: {rows: JSON.stringify(rows)},
                         success: function (result) {
                             alert(result.msg);
                             if (result.status) {
                                 var ids = new Array();
                                 $.each(rows, function(i, value) {
-                                    ids.push(this.examCourseId);
+                                    ids.push(this.teacherId);
                                 });
-                                $table.bootstrapTable('remove', {field: 'examCourseId', values: ids});
+                                $table.bootstrapTable('remove', {field: 'teacherId', values: ids});
                             }
                         }
                     });
@@ -167,7 +142,7 @@
         /*模态框事件*/
         //取消按钮清除隐藏字段
         $("#cancel").click(function () {
-            $("#examCourseId").val("");
+            $("#teacherId").val("");
         });
         //记录操作
         $("#addRecord").click(function(){
@@ -176,25 +151,21 @@
             var res = $form.data("bootstrapValidator").isValid();
             if(res){
                 var name = $("#name").val();
-                var startTime = $("#startTime").val();
-                var endTime = $("#endTime").val();
-                var examCourseId = $("#examCourseId").val();
-                var row = {examCourseId:examCourseId, name:name, startTime:startTime, endTime:endTime};
-                if(examCourseId==null||examCourseId==undefined||examCourseId==""){
+                var teacherId = $("#teacherId").val();
+                var row = {teacherId:teacherId, name:name};
+                if(teacherId==null||teacherId==undefined||teacherId==""){
                     //新增数据
                     $.ajax({
                         type: "post",
-                        url:"/examcourse?method=add",
+                        url:"/teacher?method=add",
                         data: row,
                         success: function(result) {
                             alert(result.msg);
                             if(result.status == true){
                                 //加载新建行
                                 $table.bootstrapTable('insertRow', {index: 0, row: {
-                                        examCourseId:result.data,
+                                        teacherId:result.data,
                                         name:name,
-                                        startTime:startTime,
-                                        endTime:endTime
                                     }
                                 });
                             }
@@ -204,13 +175,13 @@
                     //编辑数据
                     $.ajax({
                         type: "post",
-                        url:"/examcourse?method=update",
+                        url:"/teacher?method=update",
                         data: row,
                         success: function(result) {
                             alert(result.msg);
                             if(result.status == true){
                                 //更新行
-                                $table.bootstrapTable('updateByUniqueId', {id: examCourseId, row: row});
+                                $table.bootstrapTable('updateByUniqueId', {id: teacherId, row: row});
                             }
                         }
                     });
@@ -218,7 +189,7 @@
                 //隐藏模态框并清除数据
                 $('#addModal').modal('hide');
                 $('#addModal').removeData("bs.modal");
-                $("#examCourseId").val("");
+                $("#teacherId").val("");
             }
         });
         //表单验证
@@ -255,15 +226,6 @@
                 }
             }
         });
-        //日期选择器初始化
-        $('#datetimepicker1').datetimepicker({
-            format: 'YYYY-MM-DD hh:mm:ss',
-            locale: moment.locale('zh-cn')
-        });
-        $('#datetimepicker2').datetimepicker({
-            format: 'YYYY-MM-DD hh:mm:ss',
-            locale: moment.locale('zh-cn')
-        });
     });
     //删除单条记录
     function delRecord(id) {
@@ -272,7 +234,7 @@
         if (r == true) {
             $.ajax({
                 type: "post",
-                url: "/examcourse?method=del",
+                url: "/teacher?method=del",
                 data: {row: JSON.stringify(row)},
                 success: function (result) {
                     alert(result.msg)
@@ -287,7 +249,7 @@
     function editRecord(id) {
         var row = $table.bootstrapTable('getRowByUniqueId', id);
         //设置隐藏字段的值
-        $("#examCourseId").val(row.examCourseId);
+        $("#teacherId").val(row.teacherId);
         //设置模态框的值
         $("#name").val(row.name);
         $("#startTime").val(row.startTime);
@@ -302,7 +264,7 @@
     //操作栏的格式化
     function actionFormatter(value, row, index) {
         var result = "";
-        var id = row.examCourseId;
+        var id = row.teacherId;
         // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRecord('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";
