@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>班级管理</title>
+    <title>学生管理</title>
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-table.min.css" rel="stylesheet" type="text/css">
     <link href="css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
@@ -32,37 +32,49 @@
             <table id="table" class="table table-hover"></table>
 
             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-hidden="true">
-                <input type="hidden" name="classId" id="classId" value="">
+                <input type="hidden" name="studentId" id="studentId" value="">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                                 &times;
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">编辑班级信息</h4>
+                            <h4 class="modal-title" id="myModalLabel">编辑学生信息</h4>
                         </div>
                         <div class="modal-body">
                             <form role="form" id="form" action="javascript:void(0)">
                                 <div class="form-group">
+                                    <label class="control-label" for="name">学生名称</label>
+                                    <input type="text" class="form-control" id="name" name="name" placeholder="请输入学生名称">
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="studentNum">学号</label>
+                                    <input type="text" class="form-control" id="studentNum" name="studentNum" placeholder="请输入学号">
+                                </div>
+                                <div class="form-group">
                                     <label class="control-label" for="majorPicker">选择专业</label>
                                     <div class='input-group'>
-                                        <select class="selectpicker" id="majorPicker">
+                                        <select class="selectpicker" id="majorPicker" title="请选择年级">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="majorPicker">选择年级</label>
+                                    <label class="control-label" for="gradePicker">选择年级</label>
                                     <div class='input-group'>
-                                        <select class="selectpicker" id="gradePicker">
+                                        <select class="selectpicker" id="gradePicker" title="请选择年级">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="control-label" for="name">班级名称</label>
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="请输入班级名称">
-                                        <span class="input-group-addon">班</span>
+                                    <label class="control-label" for="classPicker">选择班级</label>
+                                    <div class='input-group'>
+                                        <select class="selectpicker" id="classPicker" name="classPicker" title="请选择班级">
+                                        </select>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="control-label" for="pwd">密码</label>
+                                    <input type="text" class="form-control" id="pwd" name="pwd" placeholder="请输入密码">
                                 </div>
                             </form>
                         </div>
@@ -83,13 +95,13 @@
     $(function () {
         //初始化表格
         $table.bootstrapTable({
-            url: '/class?method=all',
+            url: '/student?method=all',
             method: 'get',
             striped: true,                      //是否显示行间隔色
             cache: false,                       //是否使用缓存
             sortable: true,                     //是否启用排序
             sortOrder: "asc",                   //排序方式
-            toolbar:'#toolbar',
+            toolbar: '#toolbar',
             search: true,                       //搜索框
             visibleSearch: true,                //可见搜索
             showSearchClearButton: true,        //清除搜索按钮
@@ -102,8 +114,8 @@
             sidePagination: 'client',           //客户端分页
             pageNumber: 1,                      //首页页码
             pageSize: 10,                        //页面数据条数
-            pageList:[10, 25, 50, 100],
-            uniqueId: "classId",             //每一行的唯一标识
+            pageList: [10, 25, 50, 100],
+            uniqueId: "studentId",             //每一行的唯一标识
             columns: [
                 {
                     checkbox: true,
@@ -111,42 +123,59 @@
                     title: '序号',
                     align: "center",
                     width: 40,
-                    formatter:numberFormatter
-                },{
+                    formatter: numberFormatter
+                }, {
                     title: 'ID',
-                    field: 'classId',
+                    field: 'studentId',
                     sortable: true,
                     visible: false,
-                },{
-                    title: '专业id',
+                }, {
+                    title: '学号',
+                    sortable: true,
+                    field: 'studentNum',
+                }, {
+                    title: '姓名',
+                    sortable: true,
+                    field: 'name',
+                }, {
+                    title: '专业ID',
+                    sortable: true,
                     field: 'majorId',
-                    sortable: true,
                     visible: false,
-                },{
+                }, {
                     title: '专业',
+                    sortable: true,
                     field: 'majorName',
+                }, {
+                    title: '年级ID',
                     sortable: true,
-                },{
-                    title: '年级id',
                     field: 'gradeId',
-                    sortable: true,
                     visible: false,
                 }, {
                     title: '年级',
-                    field: 'gradeName',
                     sortable: true,
+                    field: 'gradeName',
+                }, {
+                    title: '班级ID',
+                    sortable: true,
+                    field: 'classId',
+                    visible: false,
                 }, {
                     title: '班级',
-                    field: 'name',
+                    sortable: true,
+                    field: 'className',
                 }, {
-                    field:'ID',
+                    title: '密码',
+                    field: 'pwd',
+                    visible: false,
+                }, {
+                    field: 'ID',
                     title: '操作',
                     width: 120,
                     align: 'center',
                     formatter: actionFormatter
                 }
-            ],responseHandler: function (result) {
-                console.log(result.data);
+            ], responseHandler: function (result) {
                 return result.data;
             }
         });
@@ -155,21 +184,21 @@
             var rows = $table.bootstrapTable('getAllSelections');
             if (rows.length == 0) {
                 alert("请先选择要删除的记录!");
-            }else {
-                var r=confirm("确定要删除勾选记录吗？（共"+rows.length+"条）");
-                if (r==true) {
+            } else {
+                var r = confirm("确定要删除勾选记录吗？（共" + rows.length + "条）");
+                if (r == true) {
                     $.ajax({
                         type: "post",
-                        url: "/class?method=dels",
+                        url: "/student?method=dels",
                         data: {rows: JSON.stringify(rows)},
                         success: function (result) {
                             alert(result.msg);
                             if (result.status) {
                                 var ids = new Array();
-                                $.each(rows, function(i, value) {
-                                    ids.push(this.classId);
+                                $.each(rows, function (i, value) {
+                                    ids.push(this.studentId);
                                 });
-                                $table.bootstrapTable('remove', {field: 'classId', values: ids});
+                                $table.bootstrapTable('remove', {field: 'studentId', values: ids});
                             }
                         }
                     });
@@ -183,8 +212,8 @@
             url: "/major?method=all",
             success: function (result) {
                 if (result.status) {
-                    $.each(result.data, function(i, value) {
-                        $("#majorPicker").append($("<option value='"+this.majorId+"'>"+this.name+"</option>"))
+                    $.each(result.data, function (i, value) {
+                        $("#majorPicker").append($("<option value='" + this.majorId + "'>" + this.name + "</option>"))
                         $("#majorPicker").selectpicker("refresh");
                     });
                 }
@@ -196,72 +225,84 @@
             url: "/grade?method=all",
             success: function (result) {
                 if (result.status) {
-                    $.each(result.data, function(i, value) {
-                        $("#gradePicker").append($("<option value='"+this.gradeId+"'>"+this.name+"</option>"))
+                    $.each(result.data, function (i, value) {
+                        $("#gradePicker").append($("<option value='" + this.gradeId + "'>" + this.name + "</option>"))
                         $("#gradePicker").selectpicker("refresh");
                     });
                 }
             }
         });
+        //加载班级下拉框
+        $("#majorPicker").change(function () {
+            loadClass();
+        });
+        $("#gradePicker").change(function () {
+            loadClass();
+        });
+
+        function loadClass() {
+            $("#classPicker").empty();
+            $.ajax({
+                type: "post",
+                url: "/class?method=sig",
+                data: {majorId: $("#majorPicker").val(), gradeId: $("#gradePicker").val()},
+                success: function (result) {
+                    if (result.status) {
+                        if (result.data.length == 0) {
+                            $("#classPicker").empty();
+                            $("#classPicker").selectpicker("refresh");
+                        } else {
+                            $.each(result.data, function (i, value) {
+                                $("#classPicker").append($("<option value='" + this.classId + "'>" + this.name + "</option>"))
+                                $("#classPicker").selectpicker("refresh");
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
         //取消按钮清除隐藏字段
         $("#cancel").click(function () {
-            $("#classId").val("");
+            $("#studentId").val("");
         });
         //记录操作
-        $("#addRecord").click(function(){
+        $("#addRecord").click(function () {
             //验证合法性
             $form.data("bootstrapValidator").validate();
             var res = $form.data("bootstrapValidator").isValid();
-            if(res){
-                var name = $("#name").val() + " 班";  //egg.4 班
-                var classId = $("#classId").val();
-                var majorId = $("#majorPicker").val();
-                var gradeId = $("#gradePicker").val();
-
-                var majorName = $("#majorPicker").find("option:selected").text();
-                var gradeName = $("#gradePicker").find("option:selected").text();
-                var row = {classId:classId, name:name, majorId:majorId, gradeId:gradeId};
-                if(classId==null||classId==undefined||classId==""){
+            if (res) {
+                var studentId = $("#studentId").val();
+                var studentNum = $("#studentNum").val();
+                var name = $("#name").val();
+                var classId = $("#classPicker").val();
+                var pwd = $("#pwd").val();
+                var row = {studentId: studentId, studentNum: studentNum, name: name, classId: classId, pwd: pwd};
+                if (studentId == null || studentId == undefined || studentId == "") {
                     //新增数据
                     $.ajax({
                         type: "post",
-                        url:"/class?method=add",
+                        url: "/student?method=add",
                         data: row,
-                        success: function(result) {
+                        success: function (result) {
                             alert(result.msg);
-                            if(result.status == true){
-                                //加载新建行
-                                $table.bootstrapTable('insertRow', {index: 0, row: {
-                                        classId:result.data,
-                                        majorId:majorId,
-                                        majorName:majorName,
-                                        gradeId:gradeId,
-                                        gradeName:gradeName,
-                                        name:name
-                                    }
-                                });
+                            if (result.status == true) {
+                                //重新加载
+                                $table.bootstrapTable('refresh');
                             }
                         }
                     });
-                }else{
+                } else {
                     //编辑数据
                     $.ajax({
                         type: "post",
-                        url:"/class?method=update",
+                        url: "/student?method=update",
                         data: row,
-                        success: function(result) {
+                        success: function (result) {
                             alert(result.msg);
-                            if(result.status == true){
-                                //更新行
-                                $table.bootstrapTable('updateByUniqueId', {id: classId, row: {
-                                        classId:classId,
-                                        majorId:majorId,
-                                        majorName:majorName,
-                                        gradeId:gradeId,
-                                        gradeName:gradeName,
-                                        name:name
-                                    }
-                                });
+                            if (result.status == true) {
+                                //重新加载
+                                $table.bootstrapTable('refresh');
                             }
                         }
                     });
@@ -269,7 +310,7 @@
                 //隐藏模态框并清除数据
                 $('#addModal').modal('hide');
                 $('#addModal').removeData("bs.modal");
-                $("#classId").val("");
+                $("#studentId").val("");
             }
         });
         //表单验证
@@ -284,18 +325,28 @@
                 name: {
                     validators: {
                         notEmpty: {
-                            message: '对不起，班级名称不能为空！'
-                        },
-                        digits: {
-                            message: '只能填写数字'
-                        },
-                        greaterThan: {
-                            value: 0,
-                            message: '班级号不能小于0'
-                        },
-                        lessThan: {
-                            value: 20,
-                            message: '班级号不能大于20'
+                            message: '对不起，学生名称不能为空！'
+                        }
+                    }
+                },
+                studentNum: {
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，学号不能为空！'
+                        }
+                    }
+                },
+                pwd: {
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，密码不能为空！'
+                        }
+                    }
+                },
+                classPicker: {
+                    validators: {
+                        notEmpty: {
+                            message: '对不起，班级不能为空！'
                         }
                     }
                 }
@@ -309,7 +360,7 @@
         if (r == true) {
             $.ajax({
                 type: "post",
-                url: "/class?method=del",
+                url: "/student?method=del",
                 data: {row: JSON.stringify(row)},
                 success: function (result) {
                     alert(result.msg)
@@ -324,12 +375,15 @@
     function editRecord(id) {
         var row = $table.bootstrapTable('getRowByUniqueId', id);
         //设置隐藏字段的值
-        $("#classId").val(row.classId);
+        $("#studentId").val(row.studentId);
         //设置模态框的值
+        $("#studentNum").val(row.studentNum);
+        $("#name").val(row.name);
+        $("#pwd").val(row.pwd);
+        //设置下拉框值
         $("#majorPicker").selectpicker('val', row.majorId);
         $("#gradePicker").selectpicker('val', row.gradeId);
-        var arr = row.name.split(" "); //截取
-        $("#name").val(arr[0]);
+        $("#classPicker").selectpicker('val', row.classId);
         //显示模态框
         $('#addModal').modal('show');
     }
@@ -340,7 +394,7 @@
     //操作栏的格式化
     function actionFormatter(value, row, index) {
         var result = "";
-        var id = row.classId;
+        var id = row.studentId;
         // result += "<a href='javascript:;' class='btn btn-xs green' onclick=\"EditViewById('" + row + "', view='view')\" title='查看'><span class='glyphicon glyphicon-search'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs blue' onclick=\"editRecord('" + id + "')\" title='编辑'><span class='glyphicon glyphicon-pencil'></span></a>";
         result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"delRecord('" + id + "')\" title='删除'><span class='glyphicon glyphicon-remove'></span></a>";

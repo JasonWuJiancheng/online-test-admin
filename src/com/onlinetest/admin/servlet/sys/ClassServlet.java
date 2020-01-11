@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -90,6 +91,18 @@ public class ClassServlet extends HttpServlet {
                         Class class1 = new Class(classId, majorId,gradeId,name);
                         classService.updateClass(class1);
                         result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS);
+                    }
+                    break;
+                case "sig":
+                    if(majorId==null || gradeId==null){
+                        result = new Result(false,ResCode.FINDERROR,ResMsg.FIND_FAULT);
+                    }else {
+                        System.out.println(majorId+" "+gradeId);
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("majorId",majorId);
+                        map.put("gradeId",gradeId);
+                        List<Class> list = classService.getClassByMajorAndGrade(map);
+                        result = new Result(true,ResCode.FINDSUCCESS,ResMsg.FIND_SUCCESS,list);
                     }
                     break;
             }

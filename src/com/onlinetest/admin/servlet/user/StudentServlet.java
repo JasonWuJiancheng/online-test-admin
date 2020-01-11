@@ -1,10 +1,10 @@
 package com.onlinetest.admin.servlet.user;
 
 import com.alibaba.fastjson.JSON;
-import com.onlinetest.admin.entity.Teacher;
 import com.onlinetest.admin.entity.Result;
-import com.onlinetest.admin.service.TeacherService;
-import com.onlinetest.admin.service.impl.TeacherServiceImpl;
+import com.onlinetest.admin.entity.Student;
+import com.onlinetest.admin.service.StudentService;
+import com.onlinetest.admin.service.impl.StudentServiceImpl;
 import com.onlinetest.admin.utils.ResCode;
 import com.onlinetest.admin.utils.ResMsg;
 import com.onlinetest.admin.utils.ResUtil;
@@ -21,10 +21,10 @@ import java.util.List;
  * @author JasonWu
  * @create 2020-01-07-16:41
  */
-@WebServlet(value = "/teacher")
-public class TeacherServlet extends HttpServlet {
+@WebServlet(value = "/student")
+public class StudentServlet extends HttpServlet {
 
-    private TeacherService teacherService = new TeacherServiceImpl();
+    private StudentService studentService = new StudentServiceImpl();
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -33,8 +33,11 @@ public class TeacherServlet extends HttpServlet {
         //解析参数
         String method = req.getParameter("method");
 
-        String teacherId = req.getParameter("teacherId");
+        String studentId = req.getParameter("studentId");
+        String studentNum = req.getParameter("studentNum");
         String name = req.getParameter("name");
+        String classId = req.getParameter("classId");
+        String pwd = req.getParameter("pwd");
 
         String rows = null;
         String row = null;
@@ -45,19 +48,19 @@ public class TeacherServlet extends HttpServlet {
         }else{
             switch (method){
                 case "all":
-                    List<Teacher> allTeacher = teacherService.getAllTeacher();
-                    if(allTeacher==null){
+                    List<Student> allStudent = studentService.getAllStudent();
+                    if(allStudent==null){
                         result = new Result(false,ResCode.OPERATIONSUCCESS,ResMsg.FIND_NULL);
                     }else {
-                        result = new Result(true,ResCode.OPERATIONSUCCESS,ResMsg.FIND_SUCCESS,allTeacher);
+                        result = new Result(true,ResCode.OPERATIONSUCCESS,ResMsg.FIND_SUCCESS,allStudent);
                     }
                     break;
                 case "add":
-                    if(name==null){
+                    if(studentNum==null || name==null || classId==null || pwd==null){
                         result = new Result(false,ResCode.SAVEERROR,ResMsg.ADD_FAULT);
                     }else {
-                        Teacher teacher = new Teacher(teacherId, name);
-                        String uuid = teacherService.insertTeacher(teacher);
+                        Student student = new Student(studentId, studentNum, name, pwd, classId);
+                        String uuid = studentService.insertStudent(student);
                         result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS,uuid);
                     }
                     break;
@@ -66,9 +69,9 @@ public class TeacherServlet extends HttpServlet {
                     if(rows == null){
                         result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
                     }else {
-                        List<Teacher> teachers= JSON.parseArray(rows,Teacher.class);
-                        teacherService.deleteTeachers(teachers);
-                        result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除"+teachers.size()+"条记录");
+                        List<Student> students = JSON.parseArray(rows,Student.class);
+                        studentService.deleteStudents(students);
+                        result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除"+students.size()+"条记录");
                     }
                     break;
                 case "del":
@@ -76,17 +79,17 @@ public class TeacherServlet extends HttpServlet {
                     if(row == null){
                         result = new Result(false,ResCode.REMOVEERROR,ResMsg.REMOVE_FAULT);
                     }else {
-                        Teacher teachers= JSON.parseObject(row,Teacher.class);
-                        teacherService.deleteTeacher(teachers);
+                        Student student= JSON.parseObject(row,Student.class);
+                        studentService.deleteStudent(student);
                         result = new Result(true,ResCode.REMOVESUCCESS,ResMsg.REMOVE_SUCCESS+",已删除1条记录");
                     }
                     break;
                 case "update":
-                    if(teacherId==null || name==null){
+                    if(studentId==null || studentNum==null || name==null || classId==null || pwd==null){
                         result = new Result(false,ResCode.SAVEERROR,ResMsg.SAVE_FAULT);
                     }else {
-                        Teacher teacher = new Teacher(teacherId, name);
-                        teacherService.updateTeacher(teacher);
+                        Student student = new Student(studentId, studentNum, name, pwd, classId);
+                        studentService.updateStudent(student);
                         result = new Result(true,ResCode.SAVESUCCESS,ResMsg.SAVE_SUCCESS);
                     }
                     break;

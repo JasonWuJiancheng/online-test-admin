@@ -1,7 +1,6 @@
 package com.onlinetest.admin.dao;
 
 import com.onlinetest.admin.entity.Class;
-import com.onlinetest.admin.entity.Grade;
 
 import java.util.List;
 
@@ -13,7 +12,9 @@ public interface ClassDao {
 
     List<Class> selectAll();
 
-    Grade selectByKeyWord();
+    List<Class> selectByKeyWord(String majorId,String gradeId);
+
+    Class selectById(String classId);
 
     //返回刚插入的数据uuid
     String insert(Class class1);

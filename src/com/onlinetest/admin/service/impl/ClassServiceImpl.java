@@ -6,6 +6,7 @@ import com.onlinetest.admin.entity.Class;
 import com.onlinetest.admin.service.ClassService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author JasonWu
@@ -18,6 +19,13 @@ public class ClassServiceImpl implements ClassService {
     @Override
     public List<Class> getAllClass() {
         return classDao.selectAll();
+    }
+
+    @Override
+    public List<Class> getClassByMajorAndGrade(Map<String, String> map) {
+        String majorId = map.get("majorId");
+        String gradeId = map.get("gradeId");
+        return classDao.selectByKeyWord(majorId,gradeId);
     }
 
     @Override
@@ -45,4 +53,5 @@ public class ClassServiceImpl implements ClassService {
     public String insertClass(Class class1) {
         return classDao.insert(class1);
     }
+
 }
