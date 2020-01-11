@@ -76,7 +76,7 @@
                         <a href="#" target="mainFrame">题型设置</a>
                     </li>
                     <li>
-                        <a href="#" target="mainFrame">专业设置</a>
+                        <a href="sys_major.html" target="mainFrame">专业设置</a>
                     </li>
                     <li>
                         <a href="sys_grade.html" target="mainFrame">年级设置</a>
@@ -128,9 +128,7 @@
                 }
             },
             error: function (e) {
-                console.log(e.status);
-                console.log(e.responseText);
-                alert("退出登录失败，请检查网路是否连接");
+                alert("退出登录失败，请检查网络是否连接");
             }
         });
     });
